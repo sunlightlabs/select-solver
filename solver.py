@@ -28,6 +28,7 @@ import requests
 import redis
 import pickle
 import dj_database_url
+import string
 
 from nltk.tokenize import word_tokenize as tokenize
 from nltk.util import ngrams as ngramify
@@ -110,8 +111,8 @@ def build_reference_featureset(terms):
     normalized_terms = []
     featureset = {}
     for term in terms:
-        normalized_terms.append(re.split(r'\/| and ', term))
-    normalized_terms = [term for sublist in normalized_terms for term in sublist]
+        normalized_terms.append(re.split(r'\/| and |\&|\-', term))
+    normalized_terms = map(string.strip, [term for sublist in normalized_terms for term in sublist])
     for term in normalized_terms:
         cached = cache.get(term)
         if cached:
